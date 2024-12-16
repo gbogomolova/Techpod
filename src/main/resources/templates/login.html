@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .login-form-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 400px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      // Обработка отправки формы
+      $('#loginForm').submit(function (event) {
+        event.preventDefault();
+
+        const username = $('#username').val();
+        const password = $('#password').val();
+
+        $.ajax({
+          url: '/api/login',
+          type: 'POST',
+          contentType: 'application/x-www-form-urlencoded',
+          data: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+          success: function (response) {
+            Swal.fire({
+              title: "Успех!",
+              text: "Вы успешно вошли в систему.",
+              icon: "success",
+              confirmButtonText: "OK"
+            }).then(() => {
+              window.location.href = "/index";
+            });
+          },
+          error: function (xhr) {
+            const message = xhr.responseText || "Неверное имя пользователя или пароль.";
+            Swal.fire({
+              title: "Ошибка!",
+              text: message,
+              icon: "error",
+              confirmButtonText: "OK"
+            });
+          }
+        });
+      });
+
+      // Кнопка назад
+      $('#backButton').click(function () {
+        window.location.href = "/";
+      });
+    });
+  </script>
+</head>
+<body>
+<div class="bg-image" style="background-image: url('https://timb.ru/upload/resize_cache/webp/iblock/5c5/q3jwhjm6ksypj97a1r8m124rhqp8ozjv.webp'); height: 100vh; overflow: auto; background-size: cover; background-position: center;">
+  <div class="login-form-container">
+    <h1 class="text-center">Вход</h1>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">Имя пользователя</label>
+        <input type="text" id="username" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Пароль</label>
+        <input type="password" id="password" class="form-control" required>
+      </div>
+      <div class="button-row">
+        <button type="submit" class="btn btn-primary w-50">Войти</button>
+        <button type="button" id="backButton" class="btn btn-secondary w-50">Назад</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>
